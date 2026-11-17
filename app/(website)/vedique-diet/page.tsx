@@ -93,15 +93,20 @@ export default function VediqueDietPage() {
             <button onClick={() => go(-1)} aria-label="Previous" className="grid h-9 w-9 shrink-0 place-items-center rounded-full border border-[#1e3d34]/50">
               <ArrowLeft size={16} />
             </button>
-            {CASES.map((x, i) => (
-              <div key={x.tab} className="flex shrink-0 items-center gap-4">
-                <button onClick={() => setActive(i)} className={i === active ? "font-semibold" : "font-normal"}>
-                  <span className="mr-2 text-sm">0{i + 1}</span>{x.tab}
-                </button>
-                {i < CASES.length - 1 && <span className="px-3 opacity-60">|</span>}
-              </div>
-            ))}
-            <button onClick={() => go(1)} aria-label="Next" className="ml-auto grid h-9 w-9 shrink-0 place-items-center rounded-full border border-[#1e3d34]/50">
+
+            {/* mx-auto centers the tabs between the arrows */}
+            <div className="mx-auto flex shrink-0 items-center gap-4">
+              {CASES.map((x, i) => (
+                <div key={x.tab} className="flex shrink-0 items-center gap-4">
+                  <button onClick={() => setActive(i)} className={i === active ? "font-semibold" : "font-normal"}>
+                    <span className="mr-2 text-sm">0{i + 1}</span>{x.tab}
+                  </button>
+                  {i < CASES.length - 1 && <span className="px-3 opacity-60">|</span>}
+                </div>
+              ))}
+            </div>
+
+            <button onClick={() => go(1)} aria-label="Next" className="grid h-9 w-9 shrink-0 place-items-center rounded-full border border-[#1e3d34]/50">
               <ArrowRight size={16} />
             </button>
           </div>
