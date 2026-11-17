@@ -15,6 +15,8 @@ export const publicRoutes = [
   "/blog",
   "/vedique-diet",
   "/vedique-diet/weight-management",
+  "/vedique-diet/lifestyle-disease-management",
+  "/lifestyle-disease-management",
   "/vedique-wellness",
   "/contact",
   "/products",
