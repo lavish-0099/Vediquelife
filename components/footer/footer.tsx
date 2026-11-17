@@ -13,7 +13,7 @@ const exploreLinks = [
 ];
 
 const infoLinks = [
-  { title: "About Us", href: "/vedique-diet" },
+  { title: "About Us", href: "/about " },
   { title: "Testimonials", href: "/#testimonials" },
   { title: "Contact", href: "/contact" },
   { title: "Policies", href: "/privacy-policy" },
