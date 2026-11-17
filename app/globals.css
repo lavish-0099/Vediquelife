@@ -1,26 +1,664 @@
-@import "tailwindcss";
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+@import "swiper/css";
+@import "swiper/css/navigation";
+@font-face {
+  font-family: "Celebes";
+  src: url("/fonts/Celebes-Light-BF64001372cdbe6.ttf") format("truetype");
+  font-weight: 300;
+  font-style: normal;
+  font-display: swap;
+}
 
+@font-face {
+  font-family: "Celebes";
+  src: url("/fonts/Celebes-Light-BF64001372cdbe6.ttf") format("truetype");
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Celebes";
+  src: url("/fonts/Celebes-SemiBold-BF64001373561ed.ttf") format("truetype");
+  font-weight: 600;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Celebes";
+  src: url("/fonts/Celebes-SemiBold-BF64001373561ed.ttf") format("truetype");
+  font-weight: 700;
+  font-style: normal;
+  font-display: swap;
+}
+
+html,
+body,
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
-}
-
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+  height: 100%;
 }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: "Celebes", var(--font-celebes), var(--font-poppins), sans-serif;
+  padding-bottom: calc(0px + env(safe-area-inset-bottom));
+  background-color: #f7f7f7;
+  color: #111827;
+}
+
+@layer base {
+  :root {
+    --background: 0 0% 100%;
+    --foreground: 222.2 84% 4.9%;
+
+    --card: 0 0% 100%;
+    --card-foreground: 222.2 84% 4.9%;
+
+    --popover: 0 0% 100%;
+    --popover-foreground: 222.2 84% 4.9%;
+
+    --primary: 222.2 47.4% 11.2%;
+    --primary-foreground: 210 40% 98%;
+
+    --secondary: 210 40% 96.1%;
+    --secondary-foreground: 222.2 47.4% 11.2%;
+
+    --muted: 210 40% 96.1%;
+    --muted-foreground: 215.4 16.3% 46.9%;
+
+    --accent: 210 40% 96.1%;
+    --accent-foreground: 222.2 47.4% 11.2%;
+
+    --destructive: 0 84.2% 60.2%;
+    --destructive-foreground: 210 40% 98%;
+
+    --border: 214.3 31.8% 91.4%;
+    --input: 214.3 31.8% 91.4%;
+    --ring: 222.2 84% 4.9%;
+
+    --radius: 0.5rem;
+  }
+
+  .dark {
+    --background: 222.2 84% 4.9%;
+    --foreground: 210 40% 98%;
+
+    --card: 222.2 84% 4.9%;
+    --card-foreground: 210 40% 98%;
+
+    --popover: 222.2 84% 4.9%;
+    --popover-foreground: 210 40% 98%;
+
+    --primary: 210 40% 98%;
+    --primary-foreground: 222.2 47.4% 11.2%;
+
+    --secondary: 217.2 32.6% 17.5%;
+    --secondary-foreground: 210 40% 98%;
+
+    --muted: 217.2 32.6% 17.5%;
+    --muted-foreground: 215 20.2% 65.1%;
+
+    --accent: 217.2 32.6% 17.5%;
+    --accent-foreground: 210 40% 98%;
+
+    --destructive: 0 62.8% 30.6%;
+    --destructive-foreground: 210 40% 98%;
+
+    --border: 217.2 32.6% 17.5%;
+    --input: 217.2 32.6% 17.5%;
+    --ring: 212.7 26.8% 83.9%;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+
+  body {
+    @apply bg-background text-foreground;
+  }
+}
+
+.ql-container {
+  font-size: 14px !important;
+}
+
+.animate-slide-in {
+  animation: fadeInDown 1s ease-in-out;
+}
+
+.animate-slide-up {
+  animation: slideInUp 1s ease-in-out;
+}
+
+@keyframes fadeInDown {
+  0% {
+    opacity: 0;
+    transform: translateY(-100%);
+  }
+
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes slideInUp {
+  0% {
+    opacity: 0;
+    transform: translateY(100%);
+  }
+
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes custom-ping {
+  0% {
+    transform: scale(1);
+    opacity: 0.5;
+  }
+
+  50% {
+    transform: scale(1.5);
+    opacity: 0;
+  }
+
+  100% {
+    transform: scale(1);
+    opacity: 0.5;
+  }
+}
+
+.ql-container {
+  font-size: 16px !important;
+  font-family: var(--font-poppins) !important;
+  font-weight: 400 !important;
+}
+
+.ql-editor {
+  padding: 0 !important;
+  line-height: 28px !important;
+  color: #3e3e3e !important;
+}
+
+.custom-ping {
+  animation: custom-ping 2s infinite ease-in-out;
+}
+
+@keyframes color-ping {
+  0% {
+    color: blue;
+    /* Starting color */
+  }
+
+  50% {
+    color: red;
+    /* Middle color */
+  }
+
+  100% {
+    color: blue;
+    /* Ending color */
+  }
+}
+
+.hide-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+.hide-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+
+.ql-editor img {
+  max-width: 100%;
+  height: auto;
+  display: block;
+  margin: 0 auto;
+}
+@keyframes shine {
+  0% {
+    transform: translateX(-150%);
+  }
+  100% {
+    transform: translateX(150%);
+  }
+}
+
+@keyframes slideUpReveal {
+  0% {
+    opacity: 0;
+    transform: translateY(60px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-slide-up-reveal {
+  animation: slideUpReveal 0.75s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+@keyframes shimmer {
+  0% {
+    background-position: 200% 0;
+    transform: scale(1);
+  }
+
+  50% {
+    transform: scale(1.05);
+    /* Zoom in at midpoint */
+  }
+
+  100% {
+    background-position: -200% 0;
+    transform: scale(1);
+  }
+}
+
+/* shine.css */
+.shine-overlay {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+
+.shine-overlay::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: -75%;
+  width: 50%;
+  height: 100%;
+  background: linear-gradient(
+    120deg,
+    rgba(255, 255, 255, 0) 0%,
+    rgba(255, 255, 255, 0.3) 50%,
+    rgba(255, 255, 255, 0) 100%
+  );
+  transform: skewX(-20deg);
+}
+
+.group:hover .shine-overlay::before {
+  animation: shine-slide 1s ease forwards;
+}
+
+@keyframes shine-slide {
+  from {
+    left: -75%;
+  }
+
+  to {
+    left: 125%;
+  }
+}
+
+.shimmer-text {
+  background: linear-gradient(90deg, #ff0909 25%, #ff53d1 50%, #7e36f1 75%);
+  background-size: 200% auto;
+  color: transparent;
+  background-clip: text;
+  -webkit-background-clip: text;
+  animation: shimmer 2.5s ease-in-out infinite;
+  display: inline-block;
+  /* Required for transform to apply */
+}
+
+.mask-left-fade {
+  mask-image: linear-gradient(to right, transparent 0%, black 20%);
+  -webkit-mask-image: linear-gradient(to right, transparent 0%, black 20%);
+}
+
+.color-ping {
+  animation: color-ping 2s infinite ease-in-out;
+}
+
+::-webkit-scrollbar {
+  width: 10px;
+  /* Width of the scrollbar */
+  height: 10px;
+  /* Height of the scrollbar */
+  scrollbar-color: #999 #ccc;
+  border: 1px solid #ccc;
+
+  box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.3);
+}
+
+::-webkit-scrollbar-corner {
+  background: #ccc;
+  /* Color of the scrollbar corner */
+}
+
+::-webkit-scrollbar-thumb {
+  background: #46604d;
+  /* Color of the scrollbar thumb */
+  border-radius: 10px;
+}
+
+::-webkit-scrollbar-track {
+  background: #c3f3d0;
+  /* Color of the scrollbar track */
+  border-radius: 10px;
+}
+
+.relative:hover .transition-transform {
+  transform: translateX(5px);
+  /* Adjust the value as needed */
+}
+
+*:focus {
+  outline: none !important;
+  /* Outline ko hamesha hide karein */
+}
+
+.focus-visible\:ring-ring:focus-visible,
+.account-button > button:focus-visible {
+  --tw-ring-color: none !important;
+}
+
+:focus-visible {
+  border-color: #dee3e5;
+}
+
+.focus\:ring-ring:focus {
+  --tw-ring-color: none !important;
+}
+
+.transition-scale {
+  transition: transform 0.3s ease-in-out;
+}
+
+.transition-scale:hover {
+  transform: scale(1.03);
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.swiper-button-prev,
+.swiper-button-next {
+  width: 40px !important;
+  height: 40px !important;
+  background-color: white;
+  color: red !important;
+  /* Text color */
+  border-radius: 50% !important;
+  /* Circle shape */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  font-size: 1.5rem;
+  transition: background-color 0.3s;
+}
+
+.swiper-button-prev:after,
+.swiper-button-next:after {
+  font-size: small !important;
+}
+
+.swiper-button-disabled {
+  display: none !important;
+  /* Hide hidden buttons */
+}
+
+.swiper-button-prev:hover,
+.swiper-button-next:hover {
+  background-color: lightgray;
+  /* Change background color on hover */
+}
+
+/* CSS for sliding in from the right and out to the left */
+.slide-next-enter {
+  opacity: 0;
+  transform: translateX(100%);
+}
+
+.slide-next-enter-active {
+  opacity: 1;
+  transform: translateX(0);
+  transition:
+    opacity 0.5s,
+    transform 0.5s;
+}
+
+.slide-next-exit {
+  opacity: 1;
+  transform: translateX(0);
+}
+
+.slide-next-exit-active {
+  opacity: 0;
+  transform: translateX(-100%);
+  transition:
+    opacity 0.5s,
+    transform 0.5s;
+}
+
+/* CSS for sliding in from the left and out to the right */
+.slide-prev-enter {
+  opacity: 0;
+  transform: translateX(-100%);
+}
+
+.slide-prev-enter-active {
+  opacity: 1;
+  transform: translateX(0);
+  transition:
+    opacity 0.5s,
+    transform 0.5s;
+}
+
+.slide-prev-exit {
+  opacity: 1;
+  transform: translateX(0);
+}
+
+.slide-prev-exit-active {
+  opacity: 0;
+  transform: translateX(100%);
+  transition:
+    opacity 0.5s,
+    transform 0.5s;
+}
+
+.parent-container {
+  overflow-x: hidden;
+}
+
+.swiper-pagination-bullet-active {
+  background-color: #c21e1d !important;
+}
+
+@keyframes fade-in {
+  from {
+    transform: translateY(-50%);
+    opacity: 0;
+  }
+
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+.animate-fade-in {
+  animation: fade-in 0.8s ease-out forwards;
+}
+
+@keyframes marquee {
+  0% {
+    transform: translateX(0%);
+  }
+
+  100% {
+    transform: translateX(-50%);
+  }
+}
+
+@layer utilities {
+  .animate-ping-slow {
+    animation: ping 1.5s cubic-bezier(0, 0, 0.2, 1) infinite;
+  }
+}
+
+@keyframes marquee {
+  0% {
+    transform: translateX(0%);
+  }
+
+  100% {
+    transform: translateX(-50%);
+  }
+}
+
+.animate-marquee {
+  animation: marquee 40s linear infinite;
+  display: flex;
+  width: max-content;
+}
+
+.animate-marquee:hover {
+  animation-play-state: paused;
+}
+
+.perspective {
+  perspective: 1000px;
+}
+
+.preserve-3d {
+  transform-style: preserve-3d;
+}
+
+.backface-hidden {
+  backface-visibility: hidden;
+}
+
+.rotate-y-180 {
+  transform: rotateY(180deg);
+}
+
+.card-inner {
+  transform-style: preserve-3d;
+  transition: transform 0.8s;
+  position: relative;
+  width: 100%;
+  height: 100%;
+}
+
+.card-front,
+.card-back {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  backface-visibility: hidden;
+  top: 0;
+  left: 0;
+}
+
+.card-back {
+  transform: rotateY(180deg);
+}
+
+@keyframes ping-slow {
+  0% {
+    transform: scale(1);
+    opacity: 1;
+  }
+
+  75%,
+  100% {
+    transform: scale(1.2);
+    opacity: 0;
+  }
+}
+
+.animate-ping-slow {
+  animation: ping-slow 1.5s cubic-bezier(0, 0, 0.2, 1) infinite;
+}
+
+.dotted-grid {
+  background-image: radial-gradient(#ff3737 1.5px, transparent 2px);
+  background-size: 12px 12px;
+  opacity: 0.6;
+}
+
+@keyframes floatRing {
+  0%,
+  100% {
+    transform: translateY(0) rotate(0deg);
+  }
+
+  50% {
+    transform: translateY(-6px) rotate(5deg);
+  }
+}
+
+.animate-floatRing {
+  animation: floatRing 2.5s ease-in-out infinite;
+}
+
+.no-scrollbar {
+  -ms-overflow-style: none;
+  /* IE and Edge */
+  scrollbar-width: none;
+  /* Firefox */
+}
+
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+  /* Chrome, Safari, Opera */
+}
+
+@keyframes vediqueShimmer {
+  0% {
+    background-position: 0% 50%;
+  }
+
+  50% {
+    background-position: 100% 50%;
+  }
+
+  100% {
+    background-position: 0% 50%;
+  }
+}
+
+.animate-vediqueShimmer {
+  background-size: 200% 200%;
+  animation: vediqueShimmer 5s ease-in-out infinite;
+}
+
+@media screen and (min-width: 1024px) and (max-width: 1100px) {
+  .force-tablet-navbar {
+    display: flex !important;
+    justify-content: center !important;
+  }
+
+  .force-desktop-navbar {
+    display: none !important;
+  }
+
+  .ipadpro-column {
+    flex-direction: column !important;
+    text-align: center !important;
+  }
+
+  .ipadpro-image {
+    margin-top: 2rem !important;
+  }
+
+  .hide-on-ipad-pro {
+    display: none !important;
+  }
+
+  .ipad-pro-max-w-full {
+    max-width: 100% !important;
+  }
 }

@@ -1,0 +1,99 @@
+import Image from "next/image";
+import { Swiper, SwiperSlide } from "swiper/react";
+import "swiper/css";
+import "swiper/css/navigation";
+import "swiper/css/pagination";
+import {
+  Navigation,
+  Pagination,
+  Autoplay,
+  Mousewheel,
+  Keyboard,
+} from "swiper/modules";
+import { IoIosArrowDroprightCircle } from "react-icons/io";
+import Link from "next/link";
+import useWindowSize from "@/hooks/use-window-size";
+import axios from "axios";
+import { useCurrentUser } from "@/hooks/use-current-user";
+import { toast } from "react-toastify";
+
+interface HomeSlideBannerProps {
+  banners: {
+    id: number;
+    title: string;
+    spanTxt: string;
+    btnTxt: string;
+    image: string;
+    href?: string;
+    points?: string[];
+  }[];
+}
+
+const HomeSlideBanner = ({ banners }: HomeSlideBannerProps) => {
+  const { width } = useWindowSize();
+  const isMobile = width !== undefined && width <= 767;
+
+  return (
+    <div className="w-full flex flex-col items-center justify-center">
+      <Swiper
+        className="w-full md:max-w-screen-xl"
+        cssMode={true}
+        spaceBetween={20}
+        slidesPerView={1}
+        mousewheel={true}
+        keyboard={true}
+        pagination={{ clickable: true }}
+        loop={true}
+        direction="horizontal"
+        autoplay={{
+          delay: 6000,
+        }}
+        modules={[Navigation, Pagination, Autoplay, Mousewheel, Keyboard]}
+      >
+        {banners.map((banner) => (
+          <SwiperSlide key={banner.id}>
+            <div className="w-full flex flex-col md:flex-row items-center justify-center">
+              <div className="md:w-1/2 flex flex-col items-start md:ml-36 justify-end md:items-start p-4 text-left">
+                <h2 className="text-3xl  text-webprimary mb-2 break-words">
+                  {banner.title}
+                </h2>
+                <p className="text-lg text-webtertiary font-semibold mb-4 break-words">
+                  {banner.spanTxt}
+                </p>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+                  {banner.points?.map((point, index) => (
+                    <div
+                      key={index}
+                      className="flex text-sm font-semibold items-center break-words"
+                    >
+                      <span className="mr-2">
+                        <IoIosArrowDroprightCircle className="text-md text-webprimary" />
+                      </span>
+                      {point}
+                    </div>
+                  ))}
+                </div>
+                <Link href={banner.href || "/"}>
+                  <button className="bg-webprimary text-white py-2 px-4 rounded-lg">
+                    {banner.btnTxt}
+                  </button>
+                </Link>
+              </div>
+              <div className="md:w-1/2 flex flex-col items-center p-4">
+                <Image
+                  src={banner.image || "/assets/images/default-category.jpg"}
+                  alt={banner.title || "Category Image"}
+                  width={isMobile ? 320 : 450}
+                  height={isMobile ? 320 : 450}
+                  className="rounded-lg md:rounded-none"
+                />
+              </div>
+            </div>
+          </SwiperSlide>
+        ))}
+      </Swiper>
+    </div>
+  );
+};
+
+export default HomeSlideBanner;

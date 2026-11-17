@@ -1,0 +1,14 @@
+User-agent: *
+Disallow: /auth/
+Disallow: /admin/
+Disallow: /dashboard/
+Disallow: /api/
+Disallow: /cart
+Disallow: /checkout
+Disallow: /user/
+Disallow: /personalization/
+Disallow: /success/
+Disallow: /failed/
+Allow: /
+
+Sitemap: https://www.vedique.life/sitemap.xml
