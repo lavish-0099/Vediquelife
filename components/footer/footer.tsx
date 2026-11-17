@@ -47,7 +47,7 @@ const Footer = () => {
                 alt="Vedique"
                 width={800}
                 height={200}
-                className="h-8 w-auto sm:h-9 lg:h-10"
+                className="h-12 w-auto sm:h-14 lg:h-16"
               />
             </Link>
 
