@@ -87,30 +87,39 @@ export default function VediqueDietPage() {
       </section>
 
       {/* CASE STUDIES + TESTIMONIALS */}
-      <section className="relative -mt-28 rounded-[56px] bg-[#f7f7f5] pb-20 pt-12">
+      <section className="relative z-10 -mt-28 rounded-[56px] bg-[#f7f7f5] pb-20 pt-12">
         <div className={WRAP}>
-          <div className="flex items-center gap-3 overflow-x-auto text-base md:text-lg">
-            <button onClick={() => go(-1)} aria-label="Previous" className="grid h-9 w-9 shrink-0 place-items-center rounded-full border border-[#1e3d34]/50">
+          <div className="relative text-base md:text-lg">
+            <button
+              onClick={() => go(-1)}
+              aria-label="Previous"
+              className="absolute left-0 top-1/2 z-10 grid h-9 w-9 -translate-y-1/2 place-items-center rounded-full border border-[#1e3d34]/50 bg-[#f7f7f5]"
+            >
               <ArrowLeft size={16} />
             </button>
 
-            {/* mx-auto centers the tabs between the arrows */}
-            <div className="mx-auto flex shrink-0 items-center gap-4">
-              {CASES.map((x, i) => (
-                <div key={x.tab} className="flex shrink-0 items-center gap-4">
-                  <button onClick={() => setActive(i)} className={i === active ? "font-semibold" : "font-normal"}>
-                    <span className="mr-2 text-sm">0{i + 1}</span>{x.tab}
-                  </button>
-                  {i < CASES.length - 1 && <span className="px-3 opacity-60">|</span>}
-                </div>
-              ))}
+            {/* px-14 keeps the tabs clear of the arrows; w-max + mx-auto centers them */}
+            <div className="overflow-x-auto px-14 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
+              <div className="mx-auto flex w-max items-center gap-4">
+                {CASES.map((x, i) => (
+                  <div key={x.tab} className="flex shrink-0 items-center gap-4">
+                    <button onClick={() => setActive(i)} className={i === active ? "font-semibold" : "font-normal"}>
+                      <span className="mr-2 text-sm">0{i + 1}</span>{x.tab}
+                    </button>
+                    {i < CASES.length - 1 && <span className="px-3 opacity-60">|</span>}
+                  </div>
+                ))}
+              </div>
             </div>
 
-            <button onClick={() => go(1)} aria-label="Next" className="grid h-9 w-9 shrink-0 place-items-center rounded-full border border-[#1e3d34]/50">
+            <button
+              onClick={() => go(1)}
+              aria-label="Next"
+              className="absolute right-0 top-1/2 z-10 grid h-9 w-9 -translate-y-1/2 place-items-center rounded-full border border-[#1e3d34]/50 bg-[#f7f7f5]"
+            >
               <ArrowRight size={16} />
             </button>
           </div>
-
           <div className="relative mt-8 flex min-h-[380px] items-center overflow-hidden rounded-[28px] bg-[#1e3d34] text-white md:min-h-[420px]">
             {/* Full-width image (green area is part of the image itself) */}
             <Image src={c.img} alt="" fill className="object-cover object-right" />
