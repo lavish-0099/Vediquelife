@@ -11,7 +11,7 @@ export const navbarItems = [
   },
   {
     label: "Vedique Shop",
-    href: "app/(shop)/products",
+    href: "/products",
     hasChild: false,
   },
   {
