@@ -326,7 +326,7 @@ export default function RevampedVediqueWay() {
 
               <div className="pt-2">
                 <Link
-                  href="/vedique-diet"
+                  href="/dr-shikha-sharma"
                   className="inline-flex items-center gap-2 px-7 py-3 rounded-full border border-white text-xs sm:text-sm font-medium text-white hover:bg-white hover:text-[#1e3d34] transition-all duration-200"
                 >
                   <span>Explore Dr. Shikha&apos;s Approach</span>
