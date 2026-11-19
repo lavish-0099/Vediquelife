@@ -125,7 +125,7 @@ export default function VediqueWellnessPage() {
       </section>
 
       {/* TEAM TABS + EXPERTS */}
-      <section className="-mt-0 rounded-t-[56px] bg-[#e6e6e4] pb-24 pt-12">
+      <section id="services" className="-mt-0 rounded-t-[56px] bg-[#e6e6e4] pb-24 pt-12">
         <div className={WRAP}>
           <div className="flex items-center gap-3 overflow-x-auto text-base md:text-lg">
             <button onClick={() => goTeam(-1)} aria-label="Previous" className="grid h-9 w-9 shrink-0 place-items-center rounded-full border border-[#1e3d34]/50">

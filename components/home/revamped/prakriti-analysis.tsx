@@ -101,7 +101,7 @@ export default function RevampedPrakritiAnalysis() {
   const current = QUESTIONS[Math.min(step, TOTAL - 1)];
 
   return (
-    <section className="w-full bg-[#1e3d34] text-white py-12 sm:py-16 lg:py-28 overflow-hidden">
+    <section id="prakriti" className="w-full bg-[#1e3d34] text-white py-12 sm:py-16 lg:py-28 overflow-hidden scroll-mt-20">
       <Container>
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-16 items-center">
           {/* ───────── LEFT: INFORMATION & CTA ───────── */}

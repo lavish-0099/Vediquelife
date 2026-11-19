@@ -14,7 +14,12 @@ export const MobileMenuItems = () => {
       </div>
       <div className="flex flex-col w-full">
         {navbarItems.map((item) => (
-          <MenuItem key={item.label} label={item.label} href={item.href} />
+          <MenuItem
+            key={item.label}
+            label={item.label}
+            href={item.href}
+            subItems={item.children}
+          />
         ))}
       </div>
     </nav>
