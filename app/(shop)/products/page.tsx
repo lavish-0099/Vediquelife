@@ -337,7 +337,7 @@ export default function VediqueShopPage() {
       {/* Slide-out Cart Drawer on Quick Add */}
       <Sheet open={isSheetOpen} onOpenChange={setIsSheetOpen}>
         <SheetContent className="w-full sm:max-w-md p-0 overflow-y-auto">
-          <CartDetails onCartClose={() => setIsSheetOpen(false)} />
+          <CartDetails />
         </SheetContent>
       </Sheet>
     </main>
