@@ -103,11 +103,10 @@ function ProductCard({
             type="button"
             aria-label={`Add ${p.title} to cart`}
             onClick={() => onAddToCart(p)}
-            className={`grid h-7 w-7 place-items-center rounded-full transition ${
-              isAdded
+            className={`grid h-7 w-7 place-items-center rounded-full transition ${isAdded
                 ? "bg-[#1e3d34] text-white"
                 : "border border-[#1e3d34]/40 hover:bg-[#1e3d34] hover:text-white"
-            }`}
+              }`}
           >
             {isAdded ? <Check size={13} /> : <Plus size={14} />}
           </button>
