@@ -17,6 +17,8 @@ export const publicRoutes = [
   "/vedique-diet/weight-management",
   "/vedique-diet/lifestyle-disease-management",
   "/lifestyle-disease-management",
+  "/vedique-diet/family-nutrition",
+  "/family-nutrition",
   "/dr-shikha-sharma",
   "/dr-shikha",
   "/vedique-wellness",
