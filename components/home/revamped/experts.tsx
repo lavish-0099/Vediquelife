@@ -17,8 +17,8 @@ interface Expert {
 }
 
 // NOTE: the first 3 are your real experts. The last 3 are PLACEHOLDERS so the
-// carousel has something to scroll (progress bar fills ~50% like your design).
-// Replace their title / subtitle / href / image, or delete them.
+// carousel has something to scroll (4 are visible on desktop, so you need more than 4 cards
+// for it to move). Replace their title / subtitle / href / image, or delete them.
 const EXPERTS: Expert[] = [
   {
     id: "ayurvedic-physicians",
@@ -86,11 +86,16 @@ const FILTER_TAGS = [
 ];
 
 const GAP = 20; // px, matches gap-5
+const AUTOPLAY_MS = 3500; // time between automatic moves
 
 export default function RevampedExperts() {
   const [activeFilter, setActiveFilter] = useState<number | null>(null);
   const [progress, setProgress] = useState({ start: 0, size: 1 });
+  const [paused, setPaused] = useState(false);
+  const [inView, setInView] = useState(true);
+  const sectionRef = useRef<HTMLElement>(null);
   const trackRef = useRef<HTMLDivElement>(null);
+  const resumeTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   /* Progress bar: fill width = visible share, fill position = scroll position */
   const updateProgress = useCallback(() => {
@@ -114,16 +119,59 @@ export default function RevampedExperts() {
     };
   }, [updateProgress]);
 
-  const scrollByCard = (dir: 1 | -1) => {
+  const scrollByCard = useCallback((dir: 1 | -1) => {
     const el = trackRef.current;
     if (!el) return;
     const card = el.firstElementChild as HTMLElement | null;
     const step = (card?.offsetWidth ?? 300) + GAP;
     el.scrollBy({ left: dir * step, behavior: "smooth" });
+  }, []);
+
+  /* Only run autoplay while the section is on screen */
+  useEffect(() => {
+    const node = sectionRef.current;
+    if (!node) return;
+    const io = new IntersectionObserver(([entry]) => setInView(entry.isIntersecting), { threshold: 0.2 });
+    io.observe(node);
+    return () => io.disconnect();
+  }, []);
+
+  /* Autoplay: move one card at a time, loop back to the start at the end */
+  useEffect(() => {
+    const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    if (paused || !inView || reduce) return;
+
+    const id = setInterval(() => {
+      const el = trackRef.current;
+      if (!el) return;
+      const max = el.scrollWidth - el.clientWidth;
+      if (max <= 2) return; // everything fits, nothing to move
+      if (el.scrollLeft >= max - 2) {
+        el.scrollTo({ left: 0, behavior: "smooth" });
+      } else {
+        scrollByCard(1);
+      }
+    }, AUTOPLAY_MS);
+
+    return () => clearInterval(id);
+  }, [paused, inView, scrollByCard]);
+
+  useEffect(() => {
+    return () => {
+      if (resumeTimer.current) clearTimeout(resumeTimer.current);
+    };
+  }, []);
+
+  /* Manual arrows pause autoplay briefly so it doesn't fight the visitor */
+  const manual = (dir: 1 | -1) => {
+    scrollByCard(dir);
+    setPaused(true);
+    if (resumeTimer.current) clearTimeout(resumeTimer.current);
+    resumeTimer.current = setTimeout(() => setPaused(false), 6000);
   };
 
   return (
-    <section className="w-full py-16 lg:py-24 bg-white">
+    <section ref={sectionRef} className="w-full py-16 lg:py-24 bg-white">
       <Container>
         {/* ───────── HEADER ───────── */}
         <span className="block text-[10px] font-semibold tracking-[0.14em] uppercase text-[#1e3d34] mb-5 text-center lg:text-left">
@@ -160,15 +208,27 @@ export default function RevampedExperts() {
           ))}
         </div>
 
-        {/* ───────── EXPERT CARDS (carousel) ───────── */}
+        {/* ───────── EXPERT CARDS (carousel: 4 visible on desktop, autoplay) ───────── */}
         <div
           ref={trackRef}
+          onMouseEnter={() => setPaused(true)}
+          onMouseLeave={() => setPaused(false)}
+          onFocus={() => setPaused(true)}
+          onBlur={() => setPaused(false)}
+          onTouchStart={() => {
+            setPaused(true);
+            if (resumeTimer.current) clearTimeout(resumeTimer.current);
+          }}
+          onTouchEnd={() => {
+            if (resumeTimer.current) clearTimeout(resumeTimer.current);
+            resumeTimer.current = setTimeout(() => setPaused(false), 4000);
+          }}
           className="flex gap-5 overflow-x-auto snap-x snap-mandatory [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
         >
           {EXPERTS.map((expert) => (
             <div
               key={expert.id}
-              className="group shrink-0 snap-start basis-[78%] sm:basis-[calc((100%-20px)/2)] lg:basis-[calc((100%-40px)/3)] rounded-[32px] overflow-hidden bg-[#f5f5f3] flex flex-col"
+              className="group shrink-0 snap-start basis-[78%] sm:basis-[calc((100%-20px)/2)] lg:basis-[calc((100%-60px)/4)] rounded-[32px] overflow-hidden bg-[#f5f5f3] flex flex-col"
             >
               {/* Photo */}
               <Link
@@ -179,17 +239,17 @@ export default function RevampedExperts() {
                   src={expert.imageUrl}
                   alt={expert.title}
                   fill
-                  sizes="(max-width: 640px) 78vw, (max-width: 1024px) 50vw, 33vw"
+                  sizes="(max-width: 640px) 78vw, (max-width: 1024px) 50vw, 25vw"
                   className="object-cover object-top group-hover:scale-105 transition-transform duration-500"
                 />
               </Link>
 
               {/* Content */}
-              <div className="px-4 pt-4 pb-6 sm:px-6 sm:pt-6 sm:pb-9 text-center sm:text-left">
-                <span className="block text-[10px] font-semibold text-[#1e3d34] mb-5">
+              <div className="px-4 pt-4 pb-6 sm:px-5 sm:pt-5 sm:pb-8 text-center sm:text-left">
+                <span className="block text-[10px] font-semibold text-[#1e3d34] mb-4">
                   {expert.index}
                 </span>
-                <h3 className="text-[17px] font-semibold text-[#1e3d34] leading-tight">
+                <h3 className="text-base lg:text-[17px] font-semibold text-[#1e3d34] leading-tight">
                   {expert.title}
                 </h3>
                 <p className="text-xs text-[#1e3d34]/80 mt-1.5">
@@ -240,7 +300,7 @@ export default function RevampedExperts() {
             <button
               type="button"
               aria-label="Previous experts"
-              onClick={() => scrollByCard(-1)}
+              onClick={() => manual(-1)}
               className="w-9 h-9 sm:w-7 sm:h-7 rounded-full border border-[#1e3d34] flex items-center justify-center text-[#1e3d34] hover:bg-[#1e3d34] hover:text-white transition"
             >
               <ArrowLeft className="w-3.5 h-3.5 sm:w-3 sm:h-3" />
@@ -248,7 +308,7 @@ export default function RevampedExperts() {
             <button
               type="button"
               aria-label="Next experts"
-              onClick={() => scrollByCard(1)}
+              onClick={() => manual(1)}
               className="w-9 h-9 sm:w-7 sm:h-7 rounded-full border border-[#1e3d34] flex items-center justify-center text-[#1e3d34] hover:bg-[#1e3d34] hover:text-white transition"
             >
               <ArrowRight className="w-3.5 h-3.5 sm:w-3 sm:h-3" />

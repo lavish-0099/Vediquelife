@@ -19,7 +19,24 @@ interface ProductItem {
   originalPrice?: number;
   imageUrl: string;
   tags: ("best" | "new")[];
+  /** Lower-cased Shopify tags + category + title, used by the category tabs */
+  searchText: string;
 }
+
+/* Tabs. "best" and "new" keep the old behaviour; the rest filter by keywords found in
+   the product's Shopify tags, category name or title. Adjust keywords to match your tags. */
+const TABS: { key: string; label: string; keywords?: string[] }[] = [
+  { key: "best", label: "Best Sellers" },
+  { key: "new", label: "New Arrivals" },
+  { key: "hair-skin", label: "Hair & Skin", keywords: ["hair", "skin"] },
+  { key: "gut", label: "Gut Health", keywords: ["gut", "digest"] },
+  { key: "weight", label: "Weight Loss", keywords: ["weight"] },
+  { key: "sleep", label: "Sleep", keywords: ["sleep"] },
+  { key: "hormonal", label: "Hormonal Balance", keywords: ["hormon", "pcos", "thyroid"] },
+  { key: "liver", label: "Liver Health", keywords: ["liver"] },
+  { key: "sleep-stress", label: "Sleep/Stress", keywords: ["sleep", "stress"] },
+  { key: "sexual", label: "Sexual Wellness", keywords: ["sexual", "libido"] },
+];
 
 const METRICS = [
   { value: "100k+", lines: ["Wellness", "Journeys"] },
@@ -31,7 +48,7 @@ const METRICS = [
 const GAP = 20;
 
 export default function RevampedFeaturedProducts() {
-  const [activeTab, setActiveTab] = useState<"best" | "new">("best");
+  const [activeTab, setActiveTab] = useState<string>("best");
   const [isSheetOpen, setIsSheetOpen] = useState(false);
   const [addedId, setAddedId] = useState<string | null>(null);
   const [progress, setProgress] = useState({ start: 0, size: 1 });
@@ -45,16 +62,27 @@ export default function RevampedFeaturedProducts() {
       try {
         const fetched = await getProducts({});
         if (fetched && fetched.length > 0) {
-          const mapped: ProductItem[] = fetched.map((p: any) => ({
-            id: p.id,
-            slug: p.slug,
-            title: p.title,
-            category: p.ProductCategories?.name || "HERBAL PRODUCTS",
-            price: p.price,
-            originalPrice: p.discountedPrice && p.discountedPrice < p.price ? p.price : undefined,
-            imageUrl: p.imageUrl || "/assets/revamp/shilajit-gummies.jpg",
-            tags: ["best", "new"],
-          }));
+          const mapped: ProductItem[] = fetched.map((p: any) => {
+            const rawTags: string[] = Array.isArray(p.tags)
+              ? p.tags
+              : typeof p.tags === "string"
+                ? p.tags.split(",")
+                : [];
+            return {
+              id: p.id,
+              slug: p.slug,
+              title: p.title,
+              category: p.ProductCategories?.name || "HERBAL PRODUCTS",
+              price: p.price,
+              originalPrice: p.discountedPrice && p.discountedPrice < p.price ? p.price : undefined,
+              imageUrl: p.imageUrl || "/assets/revamp/shilajit-gummies.jpg",
+              tags: ["best", "new"],
+              searchText: [...rawTags, p.ProductCategories?.name, p.title]
+                .filter(Boolean)
+                .join(" ")
+                .toLowerCase(),
+            };
+          });
           setProductsList(mapped);
         }
       } catch (err) {
@@ -66,7 +94,12 @@ export default function RevampedFeaturedProducts() {
     loadShopifyProducts();
   }, []);
 
-  const products = productsList.filter((p) => p.tags.includes(activeTab));
+  const activeConfig = TABS.find((t) => t.key === activeTab);
+  const products = productsList.filter((p) =>
+    activeConfig?.keywords
+      ? activeConfig.keywords.some((k) => p.searchText.includes(k))
+      : p.tags.includes(activeTab as "best" | "new")
+  );
 
   const updateProgress = useCallback(() => {
     const el = trackRef.current;
@@ -88,6 +121,11 @@ export default function RevampedFeaturedProducts() {
       window.removeEventListener("resize", updateProgress);
     };
   }, [updateProgress, activeTab, productsList]);
+
+  /* Back to the first product whenever the tab changes */
+  useEffect(() => {
+    trackRef.current?.scrollTo({ left: 0 });
+  }, [activeTab]);
 
   const scrollByCard = (dir: 1 | -1) => {
     const el = trackRef.current;
@@ -154,40 +192,39 @@ export default function RevampedFeaturedProducts() {
 
         {/* SECTION HEADER + TABS */}
         <div className="pt-10 lg:pt-14">
-          <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-6 mb-8 lg:mb-12">
-            <div>
-              <span className="text-[11px] font-semibold tracking-[0.2em] uppercase text-[#1e3d34] block mb-2">
-                VEDIQUE APOTHECARY
-              </span>
-              <h2 className="text-2xl sm:text-3xl lg:text-4xl font-light text-[#1e3d34] tracking-tight">
-                Discover wellness products
-              </h2>
-            </div>
+          <div className="mb-6">
+            <span className="text-[11px] font-semibold tracking-[0.2em] uppercase text-[#1e3d34] block mb-2">
+              VEDIQUE APOTHECARY
+            </span>
+            <h2 className="text-2xl sm:text-3xl lg:text-4xl font-light text-[#1e3d34] tracking-tight">
+              Discover wellness products
+            </h2>
+          </div>
 
-            <div className="inline-flex self-start sm:self-auto rounded-full bg-[#ebeae7] p-1 border border-[#1e3d34]/10">
-              <button
-                type="button"
-                onClick={() => setActiveTab("best")}
-                className={`px-5 py-2 rounded-full text-xs font-semibold tracking-wide transition-all ${
-                  activeTab === "best"
-                    ? "bg-[#1e3d34] text-white shadow-sm"
-                    : "text-[#1e3d34]/70 hover:text-[#1e3d34]"
-                }`}
-              >
-                Best Sellers
-              </button>
-              <button
-                type="button"
-                onClick={() => setActiveTab("new")}
-                className={`px-5 py-2 rounded-full text-xs font-semibold tracking-wide transition-all ${
-                  activeTab === "new"
-                    ? "bg-[#1e3d34] text-white shadow-sm"
-                    : "text-[#1e3d34]/70 hover:text-[#1e3d34]"
-                }`}
-              >
-                New Arrivals
-              </button>
-            </div>
+          {/* Scrollable tab row (ten tabs don't fit beside the heading) */}
+          <div
+            role="tablist"
+            aria-label="Product categories"
+            className="mb-8 flex gap-2 overflow-x-auto pb-2 hide-scrollbar lg:mb-12"
+          >
+            {TABS.map((t) => {
+              const active = activeTab === t.key;
+              return (
+                <button
+                  key={t.key}
+                  type="button"
+                  role="tab"
+                  aria-selected={active}
+                  onClick={() => setActiveTab(t.key)}
+                  className={`shrink-0 rounded-full border px-5 py-2 text-xs font-semibold tracking-wide transition-all ${active
+                      ? "border-[#1e3d34] bg-[#1e3d34] text-white shadow-sm"
+                      : "border-[#1e3d34]/25 text-[#1e3d34]/70 hover:border-[#1e3d34]/60 hover:text-[#1e3d34]"
+                    }`}
+                >
+                  {t.label}
+                </button>
+              );
+            })}
           </div>
 
           {/* PRODUCTS CAROUSEL / GRID */}
@@ -197,7 +234,7 @@ export default function RevampedFeaturedProducts() {
             </div>
           ) : products.length === 0 ? (
             <div className="py-12 flex justify-center items-center">
-              <p className="text-sm text-[#1e3d34]/60">No products found in Shopify.</p>
+              <p className="text-sm text-[#1e3d34]/60">No products found in this category yet.</p>
             </div>
           ) : (
             <div
@@ -227,11 +264,10 @@ export default function RevampedFeaturedProducts() {
                         type="button"
                         onClick={() => handleQuickAdd(p)}
                         aria-label={`Add ${p.title} to cart`}
-                        className={`absolute bottom-3 right-3 w-9 h-9 rounded-full flex items-center justify-center transition-all shadow-md ${
-                          isAdded
+                        className={`absolute bottom-3 right-3 w-9 h-9 rounded-full flex items-center justify-center transition-all shadow-md ${isAdded
                             ? "bg-[#1e3d34] text-white"
                             : "bg-white/95 text-[#1e3d34] hover:bg-[#1e3d34] hover:text-white"
-                        }`}
+                          }`}
                       >
                         {isAdded ? <Check className="w-4 h-4" /> : <Plus className="w-4 h-4" />}
                       </button>
@@ -303,7 +339,7 @@ export default function RevampedFeaturedProducts() {
       {/* Cart Sheet */}
       <Sheet open={isSheetOpen} onOpenChange={setIsSheetOpen}>
         <SheetContent className="p-0 border-none w-full sm:max-w-md">
-          <CartDetails onClose={() => setIsSheetOpen(false)} />
+          <CartDetails />
         </SheetContent>
       </Sheet>
     </section>
