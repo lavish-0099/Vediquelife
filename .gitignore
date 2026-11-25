@@ -75,3 +75,5 @@ desktop.ini
 *.pem
 *.key
 *.cert
+
+.vercel

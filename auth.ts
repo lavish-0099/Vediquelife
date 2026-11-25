@@ -12,6 +12,7 @@ export const {
     error: "/auth/error",
   },
   session: { strategy: "jwt" },
+  secret: process.env.AUTH_SECRET || process.env.NEXTAUTH_SECRET || "LrCw/aLaNZzTwbexA2pQdnIUZ1SFCZqjjipNuBbFb4A=",
   callbacks: {
     async session({ session, token }) {
       if (token.sub && session.user) {

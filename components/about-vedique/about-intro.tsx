@@ -229,7 +229,7 @@ export default function AboutIntro() {
 
               <div className="pt-2">
                 <Link
-                  href="/vedique-diet"
+                  href="/dr-shikha-sharma"
                   className="inline-flex items-center gap-2 px-6 py-2.5 rounded-full bg-white text-[#1e3d34] text-[11px] sm:text-xs font-medium hover:bg-[#f1f5ee] transition-colors duration-200"
                 >
                   <span>Explore Dr. Shikha&apos;s Approach</span>
